@@ -1,0 +1,26 @@
+---
+- hosts: all
+  become: yes
+  
+  tasks:
+  - name: Install Remi repo
+    yum:
+      name: "http//rpms.remirepo.net/enterprise/remi-release-7.rp m"
+      state: present
+
+  - name: Import Remi key
+    rpm_key:
+      key: "http://rpms.remirepo.net/RPM-GPG-KEY-remi"
+      state: present
+
+  - name: Instal EPEL repo
+    yum: name=epel-release state=present
+
+  - name: Stop firewall
+    service: name=firewalld state=stopped
+
+  - name: Instal Node.js and npm
+    yum: name=npm state=present enablerepo=epel
+
+  - name: Install Forever
+    npm: name=forever gobal=yes state=present
