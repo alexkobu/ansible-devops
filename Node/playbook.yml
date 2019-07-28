@@ -33,4 +33,12 @@
 
   - name: Install dependencies
     npm: path={{ node_apps_location }}/app
-    
+
+  - name: Check list of running node apps
+    command: forever list
+    register: forever_list
+    changed_when: false
+
+  - name: Start app
+    command: "forever start {{  node_apps_location }}/app/app.js"
+    when: "forever_list.stout.find(node_apps_location + '/app/app.js') == -1"
