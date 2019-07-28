@@ -1,5 +1,5 @@
 {
-    "name": "exaplenodeapp",
+    "name": "examplenodeapp",
     "description": "Example Express Node app",
     "author": "alex <alex.kotschi@gmail.com>",
     "dependencies": {
