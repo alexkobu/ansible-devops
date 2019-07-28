@@ -24,3 +24,13 @@
 
   - name: Install Forever
     npm: name=forever gobal=yes state=present
+
+  - name: Ensur Node.js app folder exists
+    file: "path={{ node_apps_location }} state=directory"
+
+  - name: Copy example app
+    copy: "src=app dest={{ node_apps_location }}"
+
+  - name: Install dependencies
+    npm: path={{ node_apps_location }}/app
+    
