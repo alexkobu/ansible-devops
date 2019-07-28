@@ -1,16 +1,23 @@
 ---
 - hosts: all
   become: yes
+
+  vars:
+    node_apps_location: /usr/local/opt/node
   
   tasks:
+  
+  - name: Upgrade all packages
+    yum: name=* state=latest
+
   - name: Install Remi repo
     yum:
-      name: "http//rpms.remirepo.net/enterprise/remi-release-7.rp m"
+      name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
       state: present
 
   - name: Import Remi key
     rpm_key:
-      key: "http://rpms.remirepo.net/RPM-GPG-KEY-remi"
+      key: "https://rpms.remirepo.net/RPM-GPG-KEY-remi"
       state: present
 
   - name: Instal EPEL repo
@@ -23,7 +30,7 @@
     yum: name=npm state=present enablerepo=epel
 
   - name: Install Forever
-    npm: name=forever gobal=yes state=present
+    npm: name=forever global=yes state=present
 
   - name: Ensur Node.js app folder exists
     file: "path={{ node_apps_location }} state=directory"
@@ -41,4 +48,4 @@
 
   - name: Start app
     command: "forever start {{  node_apps_location }}/app/app.js"
-    when: "forever_list.stout.find(node_apps_location + '/app/app.js') == -1"
+    when: "forever_list.stdout.find(node_apps_location + '/app/app.js') == -1"
