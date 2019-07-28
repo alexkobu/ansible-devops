@@ -1,8 +1,25 @@
 ---
 - hosts: all
   become: yes
+  
   tasks:
-  - name: Ensure NTP is installed
-    yum: name=ntp state=present
-  - name: Ensure NTP is running
-    service: name=ntpd state=started enabled=yes
+  - name: Install Apache
+    yum: name={{ item }} state=present
+    with_items:
+      - httpd
+      - httpd-devel
+  
+  - name: Copy config files
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      owner: root
+      group: root
+      mode: 0644
+    with_items:
+      - src: "httpd.conf"
+        dest: "/etc/httpd/conf/httpd.conf"
+      - src: "httpd-vhosts.conf"
+        dest: "/etc/httpd/conf/httpd-vhosts.conf"
+  - name: Make sure Apache is started now and on boot
+    service: name=httpd state=started enabled=yes
